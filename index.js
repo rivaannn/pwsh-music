@@ -2,10 +2,25 @@ import { client } from "./client.js";
 import "dotenv/config";
 import fs from "fs";
 import path from "path";
+import http from "http"; // Import modul HTTP
 import { fileURLToPath, pathToFileURL } from "url";
+import { logger } from "./src/utils/logger.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+// inisialisasi keep alive server
+const port = process.env.PORT || 3000;
+http
+  .createServer((req, res) => {
+    res.writeHead(200, { "Content-Type": "text/plain" });
+    res.write("Bot is alive!");
+    res.end();
+  })
+  .listen(port, () => {
+    logger.info(`Server berjalan di port ${port}`);
+  });
+
+// inisialisasi command
 const commandsPath = path.join(__dirname, "src", "commands");
 const commandFiles = fs
   .readdirSync(commandsPath)
